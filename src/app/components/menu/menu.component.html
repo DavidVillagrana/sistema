@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-lg bg-light">
+  
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toogle navigation">
+      <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav" *ngIf="usuarioLogueado">
+          <li class="nav-item">
+              <a class="nav-link" routerLink="/empleados" [routerLinkActive]="'active'">Empleados</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" *ngIf="userType==0" routerLink="/usuarios" [routerLinkActive]="'active'">Usuarios</a>
+          </li>
+      </ul>
+      <ul class="nav justify-content-end">
+          <li class="nav-item">
+              <a class="nav-link" routerLink="/login" *ngIf="!usuarioLogueado">Login</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link " style="cursor:ponter;" routerLink="/login" *ngIf="usuarioLogueado"
+                  (click)="logout()">Logout</a>
+          </li>
+      </ul>
+      
+  </div>
+  <span class="navbar-text mr-3 font-weight-bold small text-info" *ngIf="usuarioLogueado">{{userName}}</span>
+  <a class="navbar-brand" href="#" align="right"*ngIf="!usuarioLogueado">Sistema</a>
+</nav>

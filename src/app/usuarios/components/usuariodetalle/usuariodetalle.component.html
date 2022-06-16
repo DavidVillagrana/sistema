@@ -1,0 +1,17 @@
+<div class="container h-100" *ngIf="usuarios">
+    <div class="row justify-content-center h-100">
+        <div class="col-sm-8 align-self-center text-center">
+            <div class="card shadow">
+                <h1>Datos del usuarios</h1>
+                <div class="card-body">
+                    <h5 class="card-title">Nombre:{{usuarios.name}}</h5>
+                    <p class="card-text">Email:{{usuarios.email}}</p>
+                    <p class="card-text">Password:{{usuarios.password}}</p>
+                    <p class="card-text">Tipo: {{usuarios.tipo}}</p>
+                </div>
+                <button type="button" class="btn btn-dark" routerLink="/usuarios">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<router-outlet></router-outlet>

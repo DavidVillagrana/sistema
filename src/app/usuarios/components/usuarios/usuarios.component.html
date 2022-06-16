@@ -1,0 +1,193 @@
+<div *ngIf="usuarios.length >0; else noUsuarios">
+<div class="container">
+    
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <th scope="col">Nombre</th>
+            <th scope="col">Email</th>
+            <th scope="col">
+                <a class="btn" (click)="modal.open(mimodal)"
+                placement="top" ngTooltip="Agregar usuario">
+            <i class="fas fa-user-plus fa-lg"></i></a>
+        </th>
+        </thead>
+        <tbody>
+            <tr scope="row" *ngFor="let usuario of usuarios">
+                <td>{{usuario.name}}</td>
+                <td>{{usuario.email}}</td>
+                <td><a class="btn btn-success" 
+                    (click)="mostrarUsuario(usuario._id)"><i class="fas fa-binoculars fa-lg"></i></a>
+
+                    <a class="btn btn-warning"
+                     (click)="modificarUsuario(usuario,updatemodal)"><i class="fas fa-user-edit fa-lg"></i></a>
+                    <a class="btn btn-danger " 
+                    (click)="abrirModalEliminar(usuario._id,removemodal)"><i class="fas fa-user-times fa-lg"></i></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<ng-template #mimodal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Agregar usuario</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" >
+        <div class="form-group">
+            <label >Nombre</label>
+            <div class="input-group">
+                <input placeholder="Ingrese el nombre" class="form-control"
+                formControlName="name"
+                [ngClass]="{ 'is-invalid': submitted && fields['name'].errors }">
+                <div *ngIf="submitted && fields['name'].errors" class="invalid-feedback">
+                    <div *ngIf="fields['name'].errors['required']">Nombre es requerido</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label >Email</label>
+            <div class="input-group">
+                <input placeholder="Ingrese el email" class="form-control"
+                formControlName="email"
+                [ngClass]="{ 'is-invalid': submitted && fields['email'].errors}" >
+                <div *ngIf="submitted && fields['email'].errors" class="invalid-feedback">
+                    <div *ngIf="fields['email'].errors['required']">Email es requerido</div>
+                    <div *ngIf="fields['email'].errors['email']">Email debe ser una dirección de correo valida</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label >Contraseña</label>
+            <div class="input-group">
+                <input type="password" placeholder="Ingrese el password" class="form-control"
+                formControlName="password"
+                [ngClass]="{ 'is-invalid': submitted && fields['password'].errors}">
+                <div *ngIf="submitted && fields['password'].errors" class="invalid-feedback">
+                    <div *ngIf="fields['password'].errors['required']">Password es requerido</div>
+                    <div *ngIf="fields['password'].errors['minlength']">Password debe de tener al menos 6 caracteres</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label >Confirmar contraseña</label>
+            <div class="input-group">
+                <input type="password" placeholder="Vuelva a ingresar el password" class="form-control"
+                formControlName="passwordconfirm"
+                [ngClass]="{ 'is-invalid': submitted && fields['passwordconfirm'].errors}" >
+                <div *ngIf="submitted && fields['passwordconfirm'].errors" class="invalid-feedback">
+                    <div *ngIf="fields['passwordconfirm'].errors['required']">Confirmación requerida</div>
+                    <div *ngIf="fields['passwordconfirm'].errors['MusMatch']">Password deben coincidir</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label >Tipo de usuario</label>
+            <div class="select-group">
+                <select class="form-control" formControlName="tipo">
+                    <option value="1" selected>Regular</option>
+                    <option value="0">Administrador</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && fields['tipo'].errors" >
+                    <div *ngIf="fields['tipo'].errors['required']">Tipo de usuario requerido</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success" >Guardar</button>
+          </div>
+      </form>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #noUsuarios>
+    <div class="spinner-border text-success spinner" role="status">
+        <span class="sr-only"></span>
+    </div>
+</ng-template>
+<ng-template #removemodal let-modal>
+    <div class="modal">
+        <h4 class="modal-tittle" id="modal-basic-title">Eliminar Usuario</h4>
+        <button class="close" type="button" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p><strong>
+            ¿Estas seguro que deseas eliminar el usuario <span>{{user.name}}</span><strong>?</strong>
+        </strong></p>
+    </div>
+<div class="modal-footer">
+    <button class="btn btn-outline-secondary" (click)="modal.dismiss(' cancel click')">Cancel</button>
+    <button class="btn btn-danger" type="button"
+    (click)="deleteUser(user._id)">Eliminar</button>
+</div>
+</ng-template>
+
+<ng-template #updatemodal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">modificar Usuario</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="updateForm" (ngSubmit)="updateSubmit()">
+            <input type="hidden" formControlName="_id">
+            <label >Nombre</label>
+            <div class="input-group">
+                
+                <input placeholder="Ingrese el nombre" class="form-control"
+                formControlName="name"
+                [ngClass]="{ 'is-invalid': submitted && fields['name'].errors }">
+                <div *ngIf="submitted && fields['name'].errors" class="invalid-feedback">
+                    <div *ngIf="fields['name'].errors['required']">Nombre es requerido</div>
+                </div>
+            </div>
+    <div class="form-group">
+        <label >Email</label>
+        <div class="input-group">
+            <input placeholder="Ingrese el email" class="form-control"
+            formControlName="email" readonly
+            [ngClass]="{ 'is-invalid': submitted && fields['email'].errors}" >
+            <div *ngIf="submitted && fields['email'].errors" class="invalid-feedback">
+                <div *ngIf="fields['email'].errors['required']">Email es requerido</div>
+                <div *ngIf="fields['email'].errors['email']">Email debe ser una dirección de correo valida</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label >Contraseña</label>
+        <div class="input-group">
+            <input type="password" placeholder="Ingrese el password" class="form-control"
+            formControlName="password" onfocus="this.value=''"
+            [ngClass]="{ 'is-invalid': submitted && fields['password'].errors}">
+            <div *ngIf="submitted && fields['password'].errors" class="invalid-feedback">
+                <div *ngIf="fields['password'].errors['required']">Password es requerido</div>
+                <div *ngIf="fields['password'].errors['minlength']">Password debe de tener al menos 6 caracteres</div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label >Tipo de usuario</label>
+        <div class="select-group">
+            <select class="form-control" formControlName="tipo">
+                <option value="1" selected>Regular</option>
+                <option value="0">Administrador</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="submitted && fields['tipo'].errors" >
+                <div *ngIf="fields['tipo'].errors['required']">Tipo de usuario requerido</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary mr-2" (click)="cancelUpdate()">Cancelar</button>
+        <button type="submit" class="btn btn-success" >Guardar</button>
+      </div>
+        </form>
+    </div>
+    
+            
+</ng-template>
+<router-outlet></router-outlet>
